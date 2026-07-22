@@ -9,28 +9,50 @@ const app = express();
 
 const allowedOrigins = [
     "http://localhost:5173",
-    process.env.CLIENT_URL,
-].filter((origin): origin is string => Boolean(origin));
+    "https://task-management-system-gamma-navy.vercel.app",
+];
+
+if (process.env.CLIENT_URL) {
+    allowedOrigins.push(process.env.CLIENT_URL.replace(/\/$/, ""));
+}
 
 const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
+        // Allows Postman, Render health checks and server-to-server requests
         if (!origin) {
-            return callback(null, true);
+            callback(null, true);
+            return;
         }
 
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
+        const normalizedOrigin = origin.replace(/\/$/, "");
+
+        if (allowedOrigins.includes(normalizedOrigin)) {
+            callback(null, true);
+            return;
         }
 
-        console.error(`CORS blocked origin: ${origin}`);
-        return callback(new Error("Not allowed by CORS"));
+        console.error("Blocked CORS origin:", normalizedOrigin);
+
+        // Reject without producing an Express 500 error
+        callback(null, false);
     },
+
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+    ],
+
     credentials: true,
+    optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
+
+app.options(/.*/, cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
