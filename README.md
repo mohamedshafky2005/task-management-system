@@ -186,13 +186,13 @@ Add screenshots of:
 Frontend
 
 ```
-Coming Soon
+https://task-management-system-gamma-navy.vercel.app
 ```
 
 Backend
 
 ```
-Coming Soon
+https://task-management-system-je8g.onrender.com
 ```
 
 ---
