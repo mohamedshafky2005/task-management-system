@@ -189,3 +189,4 @@ const deleteTaskRecord = async (taskId, userId) => {
     return result.affectedRows > 0;
 };
 exports.deleteTaskRecord = deleteTaskRecord;
+//# sourceMappingURL=taskService.js.map

@@ -10,3 +10,4 @@ const generatePassword = async () => {
     console.log(hashedPassword);
 };
 generatePassword();
+//# sourceMappingURL=generatePassword.js.map

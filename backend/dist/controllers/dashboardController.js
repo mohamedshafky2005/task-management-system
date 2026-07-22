@@ -27,3 +27,4 @@ const getDashboardSummary = async (request, response) => {
     }
 };
 exports.getDashboardSummary = getDashboardSummary;
+//# sourceMappingURL=dashboardController.js.map

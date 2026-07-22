@@ -1,65 +1,49 @@
-import express, {
-    Application,
-    Request,
-    Response,
-} from "express";
-import cors from "cors";
-import dotenv from "dotenv";
+import express from "express";
+import cors, { CorsOptions } from "cors";
+
 import authRoutes from "./routes/authRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 
-dotenv.config();
+const app = express();
 
-const app: Application = express();
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.CLIENT_URL,
+].filter((origin): origin is string => Boolean(origin));
 
-app.use(
-    cors({
-        origin:
-            process.env.CLIENT_URL ||
-            "http://localhost:5173",
-        credentials: true,
-    })
-);
+const corsOptions: CorsOptions = {
+    origin: (origin, callback) => {
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        console.error(`CORS blocked origin: ${origin}`);
+        return callback(new Error("Not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (_req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Task Management API is running",
+    });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-
-app.get(
-    "/",
-    (_request: Request, response: Response) => {
-        response.status(200).json({
-            success: true,
-            message: "Task Management API is running",
-        });
-    }
-);
-
-app.get(
-    "/api/health",
-    (_request: Request, response: Response) => {
-        response.status(200).json({
-            success: true,
-            message: "Server is healthy",
-            timestamp: new Date().toISOString(),
-        });
-    }
-);
-
-app.use(
-    (
-        _request: Request,
-        response: Response
-    ): void => {
-        response.status(404).json({
-            success: false,
-            message: "Route not found",
-        });
-    }
-);
 
 export default app;

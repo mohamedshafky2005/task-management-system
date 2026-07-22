@@ -73,3 +73,4 @@ const login = async (request, response) => {
     }
 };
 exports.login = login;
+//# sourceMappingURL=authController.js.map

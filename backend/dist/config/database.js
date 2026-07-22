@@ -30,3 +30,4 @@ const testDatabaseConnection = async () => {
 };
 exports.testDatabaseConnection = testDatabaseConnection;
 exports.default = database;
+//# sourceMappingURL=database.js.map

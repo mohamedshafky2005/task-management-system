@@ -289,3 +289,4 @@ const createToken = () => {
         (0, vitest_1.expect)(response.body.message).toBe("Authentication token is required");
     });
 });
+//# sourceMappingURL=api.test.js.map
